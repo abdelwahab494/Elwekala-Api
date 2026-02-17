@@ -141,30 +141,35 @@ class _ProductCardState extends State<ProductCard> {
             flex: 3,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              spacing: AppSizes.h8,
               children: [
-                Text(
-                  widget.product.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: AppColors.text,
-                    fontWeight: FontWeight.w700,
-                    fontSize: AppSizes.sp16,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.product.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppColors.text,
+                        fontWeight: FontWeight.w700,
+                        fontSize: AppSizes.sp16,
+                      ),
+                    ),
+                    Gap(AppSizes.h2),
+                    Text(
+                      widget.product.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppColors.text2,
+                        fontWeight: FontWeight.w500,
+                        fontSize: AppSizes.sp12,
+                      ),
+                    ),
+                  ],
                 ),
-                Gap(AppSizes.h2),
-                Text(
-                  widget.product.description,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: AppColors.text2,
-                    fontWeight: FontWeight.w500,
-                    fontSize: AppSizes.sp12,
-                  ),
-                ),
-                Gap(AppSizes.h8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   spacing: AppSizes.w16,
@@ -181,7 +186,7 @@ class _ProductCardState extends State<ProductCard> {
                           ),
                         ),
                         Text(
-                          "\$${widget.product.price.toStringAsFixed(2)}",
+                          "\$${widget.product.price}",
                           style: TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,

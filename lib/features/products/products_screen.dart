@@ -23,7 +23,10 @@ class ProductsScreen extends StatelessWidget {
           physics: AlwaysScrollableScrollPhysics(),
           slivers: <Widget>[
             SliverAppBar(
-              title: Text("Products"),
+              title: Text(
+                "Products",
+                style: TextStyle(color: AppColors.primary2),
+              ),
               centerTitle: true,
               backgroundColor: AppColors.bg,
               pinned: true,
@@ -36,7 +39,7 @@ class ProductsScreen extends StatelessWidget {
                       context,
                     ).push(MaterialPageRoute(builder: (c) => FavoriteScreen()));
                   },
-                  icon: Icon(Icons.favorite),
+                  icon: Icon(Icons.favorite, color: AppColors.primary2),
                 ),
               ],
             ),
@@ -45,7 +48,11 @@ class ProductsScreen extends StatelessWidget {
                 if (state is ProductsLoading) {
                   return SliverFillRemaining(
                     hasScrollBody: false,
-                    child: Center(child: CircularProgressIndicator()),
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary2,
+                      ),
+                    ),
                   );
                 }
 
@@ -67,7 +74,7 @@ class ProductsScreen extends StatelessWidget {
                         crossAxisCount: 2,
                         mainAxisSpacing: AppSizes.h8,
                         crossAxisSpacing: AppSizes.w8,
-                        childAspectRatio: 0.5.h,
+                        childAspectRatio: 0.53.h,
                       ),
                       itemCount: state.products.length,
                       itemBuilder: (context, index) {

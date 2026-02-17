@@ -40,16 +40,31 @@ class FavoriteScreen extends StatelessWidget {
               }
 
               if (state is ProductsLoaded) {
+                if (state.favorites.isEmpty) {
+                  return SliverFillRemaining(
+                    child: Center(
+                      child: Text(
+                        "No Fav Products Yet",
+                        style: TextStyle(
+                          color: AppColors.primary2,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                  );
+                }
                 return SliverPadding(
                   padding: EdgeInsets.symmetric(
-                    horizontal:  AppSizes.w16,
-                    vertical:  AppSizes.h16,
+                    horizontal: AppSizes.w16,
+                    vertical: AppSizes.h16,
                   ),
                   sliver: SliverList.separated(
                     separatorBuilder: (context, index) => Gap(16),
                     itemCount: state.favorites.length,
                     itemBuilder: (context, index) {
-                      final ProductModel product = state.favorites.toList()[index];
+                      final ProductModel product = state.favorites
+                          .toList()[index];
                       final bool isFav = state.favorites.contains(product);
                       return ProductCard(product: product, isFav: isFav);
                     },
