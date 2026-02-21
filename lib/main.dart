@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:products_api/core/shared/cubit/products_cubit.dart';
+import 'package:products_api/core/shared/data/local/pref_helper.dart';
 import 'package:products_api/core/shared/data/repos/api/api_repo.dart';
 import 'package:products_api/features/login/cubit/login_cubit.dart';
 import 'package:products_api/features/login/login_screen.dart';
+import 'package:products_api/features/products/products_screen.dart';
 
 final ApiRepo apiRepo = ApiRepo();
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await PrefHelper.init();
+
   runApp(
     MultiBlocProvider(
       providers: [
@@ -36,7 +41,9 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData(scaffoldBackgroundColor: Color(0xfff6f6f6)),
-          home: const LoginScreen(),
+          home: PrefHelper.getToken() != null
+              ? ProductsScreen()
+              : LoginScreen(),
         );
       },
     );

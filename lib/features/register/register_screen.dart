@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:products_api/core/manager/app_colors.dart';
 import 'package:products_api/core/shared/components/en_text_field.dart';
 import 'package:products_api/core/shared/components/numbers_text_feidel.dart';
@@ -8,6 +9,7 @@ import 'package:products_api/core/shared/components/only_email_text_field.dart';
 import 'package:products_api/core/shared/components/password_text_field.dart';
 import 'package:products_api/features/login/cubit/login_cubit.dart';
 import 'package:products_api/features/products/products_screen.dart';
+import 'package:products_api/features/register/dialogs.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -20,6 +22,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String gender = "male";
   // form key
   final _formKey = GlobalKey<FormState>();
+
+  String _image = "";
 
   // text controllers
   final _nameController = TextEditingController();
@@ -36,6 +40,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> pickImage(BuildContext context, ImageSource source) async {
+    final ThemeData theme = Theme.of(context);
+    try {
+      final XFile? pickedImage = await ImagePicker().pickImage(source: source);
+      if (pickedImage == null) return;
+      if (!context.mounted) return;
+      Dialogs.showSnackBar(
+        message: "Image Changed Successfully.",
+        backgroundColor: theme.primaryColor,
+        context: context,
+      );
+      setState(() {
+        _image = pickedImage.path;
+      });
+    } catch (e) {
+      if (!context.mounted) return;
+      Dialogs.showSnackBar(
+        message: "Faild to change Image!\nPlease try again., $e",
+        backgroundColor: theme.colorScheme.error,
+        context: context,
+      );
+    }
   }
 
   @override
@@ -72,7 +100,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onTap: () {},
                         child: CircleAvatar(
                           radius: 50,
-                          backgroundImage: AssetImage("assets/profile.png"),
+                          backgroundImage: _image == ""
+                              ? AssetImage("assets/profile.png")
+                              : AssetImage(_image),
                           backgroundColor: Colors.transparent,
                         ),
                       ),
@@ -80,7 +110,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         bottom: -12,
                         right: -10,
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () async {
+                            await pickImage(context, ImageSource.camera);
+                          },
                           style: IconButton.styleFrom(
                             backgroundColor: AppColors.bg,
                             foregroundColor: AppColors.primary,

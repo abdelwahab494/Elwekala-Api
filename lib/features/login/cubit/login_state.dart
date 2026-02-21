@@ -13,8 +13,9 @@ final class LoginLoading extends LoginState {}
 
 final class LoginLoaded extends LoginState {
   final String message;
+  final ProfileModel userData;
 
-  const LoginLoaded({required this.message});
+  const LoginLoaded({required this.message, required this.userData});
 }
 
 final class LoginError extends LoginState {

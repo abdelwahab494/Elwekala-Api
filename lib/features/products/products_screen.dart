@@ -8,6 +8,7 @@ import 'package:products_api/features/favorite/favorite_screen.dart';
 import 'package:products_api/core/shared/components/product_card.dart';
 import 'package:products_api/core/shared/cubit/products_cubit.dart';
 import 'package:products_api/core/shared/cubit/products_state.dart';
+import 'package:products_api/features/profile/profile_screen.dart';
 
 class ProductsScreen extends StatelessWidget {
   const ProductsScreen({super.key});
@@ -50,6 +51,14 @@ class ProductsScreen extends StatelessWidget {
                     ).push(MaterialPageRoute(builder: (c) => FavoriteScreen()));
                   },
                   icon: Icon(Icons.favorite, color: AppColors.primary2),
+                ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(
+                      context,
+                    ).push(MaterialPageRoute(builder: (c) => ProfileScreen()));
+                  },
+                  icon: Icon(Icons.person, color: AppColors.primary2),
                 ),
               ],
             ),

@@ -3,6 +3,7 @@ import 'package:products_api/core/shared/data/models/api_fav_request_model.dart'
 import 'package:products_api/core/shared/data/models/api_request_model.dart';
 import 'package:products_api/core/shared/data/models/auth_model.dart';
 import 'package:products_api/core/shared/data/models/product_model.dart';
+import 'package:products_api/core/shared/data/models/profile_request_model.dart';
 
 class ApiRepo {
   final Dio dio = Dio(BaseOptions(baseUrl: "https://elwekala.onrender.com"));
@@ -189,5 +190,12 @@ class ApiRepo {
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  Future<ProfileModel> getProfileData({required String token}) async {
+    final response = await dio.post("/user/profile", data: {"token": token});
+    final Map<String, dynamic> data = response.data;
+    final ProfileRequestModel mainModel = ProfileRequestModel.fromJson(data);
+    return mainModel.user;
   }
 }

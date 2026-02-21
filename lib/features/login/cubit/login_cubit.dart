@@ -1,6 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:products_api/core/shared/data/local/pref_helper.dart';
 import 'package:products_api/core/shared/data/models/auth_model.dart';
+import 'package:products_api/core/shared/data/models/profile_request_model.dart';
 import 'package:products_api/core/shared/data/repos/api/api_repo.dart';
 
 part 'login_state.dart';
@@ -13,7 +15,11 @@ class LoginCubit extends Cubit<LoginState> {
     emit(LoginLoading());
     try {
       final AuthModel model = await apiRepo.login(email, password);
-      emit(LoginLoaded(message: model.message));
+      final ProfileModel userData = await apiRepo.getProfileData(
+        token: model.user!.token,
+      );
+      await PrefHelper.saveToken(userData.token);
+      emit(LoginLoaded(message: model.message, userData: userData));
     } catch (e) {
       emit(LoginError(message: e.toString()));
     }
@@ -40,9 +46,37 @@ class LoginCubit extends Cubit<LoginState> {
         gender: gender,
         image: image,
       );
-      emit(LoginLoaded(message: model.message));
+      final ProfileModel userData = await apiRepo.getProfileData(
+        token: model.user!.token,
+      );
+      await PrefHelper.saveToken(userData.token);
+      emit(LoginLoaded(message: model.message, userData: userData));
     } catch (e) {
       emit(LoginError(message: e.toString()));
     }
   }
+
+  // Future<void> pickImage(BuildContext context, ImageSource source) async {
+  //   final ThemeData theme = Theme.of(context);
+  //   try {
+  //     final XFile? pickedImage = await ImagePicker().pickImage(source: source);
+  //     if (pickedImage == null) return;
+  //     if (!context.mounted) return;
+  //     Dialogs.showSnackBar(
+  //       message: "Image Changed Successfully.",
+  //       backgroundColor: theme.primaryColor,
+  //       context: context,
+  //     );
+  //     setState(() {
+  //       _image = pickedImage.path;
+  //     });
+  //   } catch (e) {
+  //     if (!context.mounted) return;
+  //     Dialogs.showSnackBar(
+  //       message: "Faild to change Image!\nPlease try again., $e",
+  //       backgroundColor: theme.colorScheme.error,
+  //       context: context,
+  //     );
+  //   }
+  // }
 }
