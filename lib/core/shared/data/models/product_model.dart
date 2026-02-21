@@ -29,18 +29,20 @@ class ProductModel {
     });
 
     factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
-        id: json["_id"],
-        status: statusValues.map[json["status"]]!,
-        category: categoryValues.map[json["category"]]!,
-        name: json["name"],
-        price: json["price"]?.toDouble(),
-        description: json["description"],
-        image: json["image"],
-        images: List<String>.from(json["images"].map((x) => x)),
-        company: json["company"],
-        countInStock: json["countInStock"],
-        v: json["__v"],
-        sales: json["sales"],
+        id: json["_id"] ?? "",
+        status: statusValues.map[json["status"]] ?? Status.newItem,
+        category: categoryValues.map[json["category"]] ?? Category.laptops,
+        name: json["name"] ?? "",
+        price: json["price"]?.toDouble() ?? 0.0,
+        description: json["description"] ?? "",
+        image: json["image"] ?? "",
+        images: json["images"] != null 
+            ? List<String>.from(json["images"].map((x) => x))
+            : [],
+        company: json["company"] ?? "",
+        countInStock: json["countInStock"] ?? 0,
+        v: json["__v"] ?? 0,
+        sales: json["sales"] ?? 0,
     );
 
     Map<String, dynamic> toJson() => {

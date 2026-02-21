@@ -12,9 +12,11 @@ class ApiRequestModel {
     });
 
     factory ApiRequestModel.fromJson(Map<String, dynamic> json) => ApiRequestModel(
-        status: json["status"],
-        message: json["message"],
-        product: List<ProductModel>.from(json["product"].map((x) => ProductModel.fromJson(x))),
+        status: json["status"] ?? "",
+        message: json["message"] ?? "",
+        product: json["product"] != null
+            ? List<ProductModel>.from(json["product"].map((x) => ProductModel.fromJson(x)))
+            : [],
     );
 
     Map<String, dynamic> toJson() => {

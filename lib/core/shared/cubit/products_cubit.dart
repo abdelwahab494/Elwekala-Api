@@ -14,7 +14,63 @@ class ProductsCubit extends Cubit<ProductsState> {
     try {
       final List<ProductModel> products = await repo.loadProductsData();
       final List<ProductModel> favorites = await repo.getFavProducts();
-      emit(ProductsLoaded(products: products, favorites: favorites));
+      final List<ProductModel> cart = await repo.getCartProducts(
+        "01055487878258",
+      );
+      emit(
+        ProductsLoaded(products: products, favorites: favorites, cart: cart),
+      );
+    } catch (e) {
+      emit(ProductsError(e.toString()));
+    }
+  }
+
+  Future<void> loadCart() async {
+    // If state is not ProductsLoaded, try to load everything first
+    if (state is! ProductsLoaded) {
+      // Load all products first to ensure we have a valid state
+      await loadProducts();
+      return;
+    }
+
+    try {
+      final List<ProductModel> cart = await repo.getCartProducts(
+        "01055487878258",
+      );
+      final currentState = state as ProductsLoaded;
+      emit(currentState.copyWith(cart: cart));
+    } catch (e) {
+      // If cart loading fails, keep current state but set cart to empty
+      if (state is ProductsLoaded) {
+        final currentState = state as ProductsLoaded;
+        emit(currentState.copyWith(cart: []));
+      } else {
+        emit(ProductsError(e.toString()));
+      }
+    }
+  }
+
+  Future<void> addToCart(ProductModel product, {int quantity = 1}) async {
+    if (state is! ProductsLoaded) return;
+
+    try {
+      await repo.addToCart("01055487878258", product.id, quantity);
+      final List<ProductModel> cart = await repo.getCartProducts("01055487878258");
+      final currentState = state as ProductsLoaded;
+      emit(currentState.copyWith(cart: cart));
+    } catch (e) {
+      emit(ProductsError(e.toString()));
+    }
+  }
+
+  Future<void> removeFromCart(ProductModel product) async {
+    if (state is! ProductsLoaded) return;
+
+    try {
+      await repo.removeFromCart("01055487878258", product.id);
+      final List<ProductModel> cart = await repo.getCartProducts("01055487878258");
+      final currentState = state as ProductsLoaded;
+      emit(currentState.copyWith(cart: cart));
     } catch (e) {
       emit(ProductsError(e.toString()));
     }

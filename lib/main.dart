@@ -3,12 +3,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:products_api/core/shared/cubit/products_cubit.dart';
 import 'package:products_api/core/shared/data/repos/api/api_repo.dart';
-import 'package:products_api/features/products/products_screen.dart';
+import 'package:products_api/features/login/cubit/login_cubit.dart';
+import 'package:products_api/features/login/login_screen.dart';
 
 final ApiRepo apiRepo = ApiRepo();
 
-void main() {
-  runApp(const MyApp());
+Future<void> main() async {
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ProductsCubit(apiRepo)..loadProducts(),
+        ),
+        BlocProvider(create: (context) => LoginCubit(apiRepo)),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -21,14 +32,11 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return BlocProvider(
-          create: (context) => ProductsCubit(apiRepo)..loadProducts(),
-          child: MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-            theme: ThemeData(scaffoldBackgroundColor: Color(0xfff6f6f6)),
-            home: const ProductsScreen(),
-          ),
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Flutter Demo',
+          theme: ThemeData(scaffoldBackgroundColor: Color(0xfff6f6f6)),
+          home: const LoginScreen(),
         );
       },
     );

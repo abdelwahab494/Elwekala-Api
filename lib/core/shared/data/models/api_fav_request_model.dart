@@ -8,10 +8,12 @@ class ApiFavRequestModel {
 
   factory ApiFavRequestModel.fromJson(Map<String, dynamic> json) =>
       ApiFavRequestModel(
-        status: json["status"],
-        favoriteProducts: List<ProductModel>.from(
-          json["favoriteProducts"].map((x) => ProductModel.fromJson(x)),
-        ),
+        status: json["status"] ?? "",
+        favoriteProducts: json["favoriteProducts"] != null
+            ? List<ProductModel>.from(
+                json["favoriteProducts"].map((x) => ProductModel.fromJson(x)),
+              )
+            : [],
       );
 
   Map<String, dynamic> toJson() => {

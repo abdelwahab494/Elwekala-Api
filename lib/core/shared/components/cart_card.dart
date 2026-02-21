@@ -7,18 +7,19 @@ import 'package:products_api/core/manager/app_sizes.dart';
 import 'package:products_api/core/shared/data/models/product_model.dart';
 import 'package:products_api/core/shared/cubit/products_cubit.dart';
 
-class ProductCard extends StatefulWidget {
-  const ProductCard({super.key, required this.product, required this.isFav});
+class CartCard extends StatefulWidget {
+  const CartCard({super.key, required this.product, required this.isFav});
   final ProductModel product;
   final bool isFav;
 
   @override
-  State<ProductCard> createState() => _ProductCardState();
+  State<CartCard> createState() => _CartCardState();
 }
 
-class _ProductCardState extends State<ProductCard> {
+class _CartCardState extends State<CartCard> {
   late final PageController _controller = PageController(initialPage: 1);
   int _currentPage = 1;
+  int _quantity = 1;
 
   @override
   void dispose() {
@@ -29,7 +30,7 @@ class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(maxHeight: AppSizes.h350),
+      constraints: BoxConstraints(maxHeight: AppSizes.h400),
       padding: EdgeInsets.all(AppSizes.w8),
       decoration: BoxDecoration(
         color: AppColors.bg,
@@ -172,9 +173,9 @@ class _ProductCardState extends State<ProductCard> {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  spacing: AppSizes.w16,
                   children: [
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -195,6 +196,83 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                       ],
                     ),
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () async {
+                            if (_quantity > 1) {
+                              setState(() {
+                                _quantity--;
+                              });
+                            } else {
+                              final messenger = ScaffoldMessenger.of(context);
+                              try {
+                                await context
+                                    .read<ProductsCubit>()
+                                    .removeFromCart(widget.product);
+                                if (mounted) {
+                                  messenger.showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        "Product removed from cart!",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                if (mounted) {
+                                  messenger.showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        "Failed to remove product",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              }
+                            }
+                          },
+                          icon: Icon(Icons.remove_circle_outline),
+                          color: AppColors.primary2,
+                          iconSize: 24,
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: AppSizes.w12,
+                            vertical: AppSizes.h4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.bg2,
+                            borderRadius: BorderRadius.circular(AppSizes.r12),
+                          ),
+                          child: Text(
+                            "$_quantity",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: AppSizes.sp16,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _quantity++;
+                            });
+                          },
+                          icon: Icon(Icons.add_circle_outline),
+                          color: AppColors.primary2,
+                          iconSize: 24,
+                        ),
+                      ],
+                    ),
                     Expanded(
                       child: FilledButton(
                         onPressed: () async {
@@ -202,14 +280,13 @@ class _ProductCardState extends State<ProductCard> {
                           try {
                             await context.read<ProductsCubit>().addToCart(
                               widget.product,
-                              quantity: 1,
+                              quantity: _quantity,
                             );
                             if (mounted) {
-                              messenger.
-                              showSnackBar(
+                              messenger.showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    "Product added to cart!",
+                                    "Product added to cart successfully!",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -236,13 +313,14 @@ class _ProductCardState extends State<ProductCard> {
                         },
                         style: FilledButton.styleFrom(
                           backgroundColor: AppColors.primary2,
-                          padding: EdgeInsets.zero,
+                          padding: EdgeInsets.symmetric(vertical: AppSizes.h12),
                         ),
                         child: Text(
                           "Buy",
                           style: TextStyle(
                             color: AppColors.bg,
                             fontWeight: FontWeight.bold,
+                            fontSize: AppSizes.sp16,
                           ),
                         ),
                       ),
