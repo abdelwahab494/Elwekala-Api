@@ -30,7 +30,7 @@ class _CartCardState extends State<CartCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(maxHeight: AppSizes.h400),
+      constraints: BoxConstraints(maxHeight: AppSizes.h350),
       padding: EdgeInsets.all(AppSizes.w8),
       decoration: BoxDecoration(
         color: AppColors.bg,

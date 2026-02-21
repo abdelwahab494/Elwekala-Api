@@ -203,10 +203,10 @@ class _ProductCardState extends State<ProductCard> {
                             await context.read<ProductsCubit>().addToCart(
                               widget.product,
                               quantity: 1,
+                              isFromHome: true,
                             );
                             if (mounted) {
-                              messenger.
-                              showSnackBar(
+                              messenger.showSnackBar(
                                 SnackBar(
                                   content: Text(
                                     "Product added to cart!",
@@ -238,12 +238,9 @@ class _ProductCardState extends State<ProductCard> {
                           backgroundColor: AppColors.primary2,
                           padding: EdgeInsets.zero,
                         ),
-                        child: Text(
-                          "Buy",
-                          style: TextStyle(
-                            color: AppColors.bg,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Icon(
+                          Icons.shopping_cart_rounded,
+                          color: Colors.white,
                         ),
                       ),
                     ),
